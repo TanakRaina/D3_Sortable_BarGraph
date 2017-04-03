@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head></head>
+<style>
+
+    body {
+        background: #F0F8FF;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        position: relative;
+        width: 960px;
+    }
+
+    .axis text {
+
+        font: 10px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+
+    .bar:hover {
+        fill: rgba(62, 59, 54, 0.63);
+    }
+    .d3-tip {
+        line-height: 1;
+        font-weight: bold;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 2px;
+        margin: -1px 0 0 0;
+        position:relative;
+    }
+
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+        box-sizing: border-box;
+        display: inline;
+        font-size: 5px;
+        width: 100%;
+        line-height: 1;
+        color: rgba(0, 0, 0, 0.8);
+        content: "\25BC";
+        position: absolute;
+        text-align: center;
+    }
+    .d3-tip.n:after {
+        margin: -1px 0 0 0;
+        top: 100%;
+        left: 0;
+    }
+
+    .x.axis path {
+        display: none;
+    }
+
+    label {
+        position: absolute;
+        top: 20px;
+        right: -60px;
+        color: orangered;
+    }
+
+</style>
+<label ><input type="checkbox">Sort Values</label>
+
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script>
+
+
+    var data=([{"Rank": 20.78, "Rule": 258, "cid": 551}, {"Rank": 33.51, "Rule": 263, "cid": 775},
+        {"Rank": 13.91, "Rule": 264, "cid": 571}, {"Rank": 13.89, "Rule": 265, "cid": 574},
+        {"Rank": 13.91, "Rule": 267, "cid": 579}, {"Rank": 27.65, "Rule": 268, "cid": 763},
+        {"Rank": 20.85, "Rule": 322, "cid": 851}, {"Rank": 13.91, "Rule": 271, "cid": 591},
+        {"Rank": 13.91, "Rule": 274, "cid": 599}, {"Rank": 20.75, "Rule": 19, "cid": 652},
+        {"Rank": 109.01, "Rule": 21, "cid": 572}, {"Rank": 20.8, "Rule": 283, "cid": 746},
+        {"Rank": 13.91, "Rule": 284, "cid": 636}, {"Rank": 13.91, "Rule": 285, "cid": 638},
+        {"Rank": 0.45, "Rule": 286, "cid": 641}, {"Rank": 1.14, "Rule": 287, "cid": 643},
+        {"Rank": 0.45, "Rule": 288, "cid": 645}, {"Rank": 13.91, "Rule": 289, "cid": 647},
+        {"Rank": 13.75, "Rule": 290, "cid": 649}, {"Rank": 20.79, "Rule": 291, "cid": 753},
+        {"Rank": 13.78, "Rule": 292, "cid": 756}, {"Rank": 13.91, "Rule": 294, "cid": 767},
+        {"Rank": 13.91, "Rule": 295, "cid": 770}, {"Rank": 15.15, "Rule": 297, "cid": 779},
+        {"Rank": 13.91, "Rule": 299, "cid": 784}, {"Rank": 13.91, "Rule": 44, "cid": 677},
+        {"Rank": 13.25, "Rule": 61, "cid": 89}, {"Rank": 20.56, "Rule": 321, "cid": 847},
+        {"Rank": 20.85, "Rule": 303, "cid": 797}, {"Rank": 20.86, "Rule": 304, "cid": 801},
+        {"Rank": 13.44, "Rule": 305, "cid": 804}, {"Rank": 13.91, "Rule": 306, "cid": 806},
+        {"Rank": 13.8, "Rule": 307, "cid": 808}, {"Rank": 13.91, "Rule": 308, "cid": 811},
+        {"Rank": 20.39, "Rule": 310, "cid": 818}, {"Rank": 20.82, "Rule": 300, "cid": 788},
+        {"Rank": 20.8, "Rule": 312, "cid": 824}, {"Rank": 20.86, "Rule": 315, "cid": 830},
+        {"Rank": 29.61, "Rule": 316, "cid": 837}, {"Rank": 13.91, "Rule": 317, "cid": 835},
+        {"Rank": 0.12, "Rule": 446, "cid": 1555}, {"Rank": 26.61, "Rule": 447, "cid": 1559},
+        {"Rank": 13.91, "Rule": 320, "cid": 844}, {"Rank": 20.86, "Rule": 193, "cid": 403},
+        {"Rank": 13.91, "Rule": 450, "cid": 1568}, {"Rank": 7.11, "Rule": 323, "cid": 854},
+        {"Rank": 7.11, "Rule": 324, "cid": 857}, {"Rank": 13.91, "Rule": 33, "cid": 52},
+        {"Rank": 13.91, "Rule": 329, "cid": 882}, {"Rank": 13.91, "Rule": 311, "cid": 821},
+        {"Rank": 13.91, "Rule": 269, "cid": 585}, {"Rank": 20.86, "Rule": 210, "cid": 865},
+        {"Rank": 27.82, "Rule": 211, "cid": 863}, {"Rank": 13.89, "Rule": 345, "cid": 1429},
+        {"Rank": 13.65, "Rule": 346, "cid": 1431}, {"Rank": 20.82, "Rule": 347, "cid": 1435},
+        {"Rank": 13.91, "Rule": 348, "cid": 1438}, {"Rank": 13.91, "Rule": 350, "cid": 1443},
+        {"Rank": 20.17, "Rule": 223, "cid": 451}, {"Rank": 20.79, "Rule": 224, "cid": 454},
+        {"Rank": 20.79, "Rule": 228, "cid": 463}, {"Rank": 14.9, "Rule": 229, "cid": 466},
+        {"Rank": 0.06, "Rule": 449, "cid": 1564}, {"Rank": 13.91, "Rule": 235, "cid": 483}, {"Rank": 13.91, "Rule": 236, "cid": 486}, {"Rank": 13.91, "Rule": 237, "cid": 489}, {"Rank": 13.1, "Rule": 239, "cid": 495}, {"Rank": 13.91, "Rule": 242, "cid": 505}, {"Rank": 13.8, "Rule": 302, "cid": 793}, {"Rank": 27.81, "Rule": 244, "cid": 862}, {"Rank": 13.91, "Rule": 246, "cid": 515}, {"Rank": 0.44, "Rule": 2, "cid": 5}, {"Rank": 13.91, "Rule": 351, "cid": 1446}])
+
+
+    var margin = {top: 60, right: 20, bottom: 30, left: 40},
+            width = 1260 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+
+
+    var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1, 1);
+
+    var y = d3.scale.linear()
+            .range([height, 0]);
+
+
+    var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .ticks(10);
+
+
+    var color=d3.scale.linear()
+            .domain([0, d3.max(data, function(d) { return d.Rank; })])
+            .range(["steelblue","red"]);
+
+    var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .html(function(d) {
+                return "For cid: <span style='color:#fffd59'>" + d.cid +"</span>"+"<br>with ruleid :<span style='color:#fffd59'>" + d.Rule+" </span>"+"<br>change current index "
+                        ;
+            })
+
+    var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+    svg.call(tip);
+
+
+    data.forEach(function(d) {
+
+        d.Rule = d.Rule;
+        d.Rank = +d.Rank;
+    });
+
+    x.domain(data.map(function(d) {console.log(d.Rule)
+        return d.Rule; }));
+    y.domain([0, d3.max(data, function(d) { return d.Rank; })]);
+
+    svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + (height )+ ")")
+            .call(xAxis)
+            .selectAll("text")
+            .style("text-anchor", "end")
+            //.attr("fill","DarkSlateGrey ")
+            .attr("dx", "-.6em")
+            .attr("dy", "-.55em")
+            .attr("transform", "rotate(-90)" );
+
+    svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+            //.attr("fill","DarkSlateGrey ")
+            .attr("transform", "rotate(-90)")
+            .attr("fill","orangered")
+            .attr("y", -30)
+            .attr("x",15)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("RANK");
+
+
+
+    svg.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x((d.Rule)+10); })
+            .attr("width", x.rangeBand())
+            .attr("y", function(d) { return y(d.Rank); })
+            .attr("height", function(d) { return height - y(d.Rank); })
+            .attr("fill",function(d){return color(d.Rank) })
+            .on('mouseover', tip.show)
+            .on('mouseout', tip.hide);
+
+
+
+
+
+    d3.select("input").on("change", change);
+
+    var sortTimeout = setTimeout(function() {
+        d3.select("input").property("checked", true).each(change);
+    }, 2000);
+
+    function change() {
+        clearTimeout(sortTimeout);
+
+        // Copy-on-write since tweens are evaluated after a delay.
+        var x0 = x.domain(data.sort(this.checked
+                ? function(a, b) { return b.Rank - a.Rank; }
+                : function(a, b) { return d3.ascending(a.Rule, b.Rule); })
+                .map(function(d) { return d.Rule; }))
+                .copy();
+
+        svg.selectAll(".bar")
+                .sort(function(a, b) { return x0(a.Rule) - x0(b.Rule); });
+
+        var transition = svg.transition().duration(750),
+                delay = function(d, i) { return i * 50; };
+
+        transition.selectAll(".bar")
+                .delay(delay)
+                .attr("x", function(d) { return x0(d.Rule); });
+
+        transition.select(".x.axis")
+                .call(xAxis)
+                .selectAll("g")
+                .delay(delay)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.6em")
+                .attr("dy", "-.55em");
+    }
+
+
+</script>
+</body>
